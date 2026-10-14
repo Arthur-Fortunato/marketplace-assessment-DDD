@@ -26,7 +26,7 @@ public class ContratoController {
         return ContratoResponse.from(c);
     }
     @GetMapping("/{id}")
-    public ContratoResponse buscar(@RequestHeader(value="X-Correlation-Id", required=false) String correlationId, @PathVariable UUID id) {
+    public ContratoResponse buscar(@RequestHeader(value="X-Correlation-Id", required=false) String correlationId, @PathVariable("id") UUID id) {
         log.info("http.contrato.buscar correlationId={} contratoId={}", correlationId, id);
         return ContratoResponse.from(service.buscar(id));
     }
@@ -34,5 +34,15 @@ public class ContratoController {
     public List<ContratoResponse> listar(@RequestHeader(value="X-Correlation-Id", required=false) String correlationId) {
         log.info("http.contrato.listar correlationId={}", correlationId);
         return service.listar().stream().map(ContratoResponse::from).toList();
+    }
+
+    @PatchMapping("/{id}/entrega")
+    public ContratoResponse registrarEntrega(@PathVariable("id") UUID id) {
+        return ContratoResponse.from(service.registrarEntrega(id));
+    }
+
+    @PatchMapping("/{id}/concluir")
+    public ContratoResponse concluir(@PathVariable("id") UUID id) {
+        return ContratoResponse.from(service.concluir(id));
     }
 }

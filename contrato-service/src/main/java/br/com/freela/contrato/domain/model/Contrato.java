@@ -1,6 +1,7 @@
 package br.com.freela.contrato.domain.model;
 
 import br.com.freela.contrato.domain.event.ContratoCriado;
+import br.com.freela.contrato.domain.event.ContratoConcluido;
 import br.com.freela.contrato.domain.shared.DomainEvent;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -45,8 +46,11 @@ public class Contrato {
         status = StatusContrato.ENTREGA_REGISTRADA;
     }
     public void concluir() {
-        if (status != StatusContrato.ENTREGA_REGISTRADA) throw new IllegalStateException("A entrega precisa estar registrada");
+        if (status != StatusContrato.ENTREGA_REGISTRADA) {
+            throw new IllegalStateException("A entrega precisa estar registrada");
+        }
         status = StatusContrato.CONCLUIDO;
+        domainEvents.add(ContratoConcluido.novo(this));
     }
     public void cancelar() {
         if (status == StatusContrato.CONCLUIDO) throw new IllegalStateException("Contrato concluído não pode ser cancelado");
